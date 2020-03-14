@@ -1,0 +1,4 @@
+The visualizer scenes in the K2-asset include the HoloTriangles-shader by Roland Smeenk (Twitter: @rolandsmeenk). It was originally developed for his GitHub-project: https://github.com/rolandsmeenk/HololensScanningEffect
+
+That portion of the software is copyright (c) 2017-2018 by Roland Smeenk. More Unity shaders from the same shader expert are available here: https://www.assetstore.unity3d.com/en/#!/content/89989
+
