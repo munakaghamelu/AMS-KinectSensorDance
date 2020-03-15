@@ -1,5 +1,5 @@
 sceneSetups:
-- path: Assets/Project/Scenes/KinectPlayBack.unity
+- path: Assets/Project/Scenes/KinectRecorder.unity
   isLoaded: 1
   isActive: 1
   isSubScene: 0

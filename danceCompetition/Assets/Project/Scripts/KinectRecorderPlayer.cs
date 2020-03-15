@@ -256,7 +256,7 @@ public class KinectRecorderPlayer : MonoBehaviour
 
         selectSpeed.onValueChanged.AddListener(delegate {
             DropdownValueChanged(selectSpeed);
-        });
+        }); 
 
         if (playAtStart)
         {
