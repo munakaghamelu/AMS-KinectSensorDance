@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using System;
 using System.IO;
 using System.Linq;
@@ -8,7 +7,7 @@ using System.Text;
 using System.Globalization; 
 using static System.Math;
 
-public class PositionVectors : MonoBehaviour
+public class PositionVectors
 {
     private static Dictionary<string, string> jointsAndCoordinates = new Dictionary<string, string>();
     private static List<List<float>> positionVectorList = new List<List<float>>();
