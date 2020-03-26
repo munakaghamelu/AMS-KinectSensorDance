@@ -48,7 +48,7 @@ public class TransformFunction : MonoBehaviour
         {
             if (File.Exists(path))
             {
-                Debug.Log(path);
+                //Debug.Log(path);
                 StreamReader fileReader = new StreamReader(path);
                 readKinect(fileReader);
             }

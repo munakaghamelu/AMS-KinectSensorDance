@@ -6,7 +6,6 @@ public class MainMenu : MonoBehaviour
 {
     public void QuitProgram()
     {
-        Debug.Log("QUIT!!");
         Application.Quit();
     }
 }

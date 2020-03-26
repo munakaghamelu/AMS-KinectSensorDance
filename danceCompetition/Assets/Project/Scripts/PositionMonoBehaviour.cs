@@ -1,55 +1,74 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using System;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Globalization; 
+using System.Globalization;
 using static System.Math;
 
 public class PositionMonoBehaviour : MonoBehaviour
 {
-    private static Dictionary<string, string> jointsAndCoordinates = new Dictionary<string, string>();
-    private static List<List<float>> positionVectorList = new List<List<float>>();
-    private static List<List<float>> normalisedPositionVectors = new List<List<float>>();
-    public void positionVectors() {
+    private Dictionary<string, string> jointsAndCoordinates = new Dictionary<string, string>();
+    private List<List<float>> positionVectorList = new List<List<float>>();
+    private List<List<float>> normalisedPositionVectors = new List<List<float>>();
+
+    public void getVectors()
+    {
+        string filePath1 = ComparisonFiles.path1;
+        string filePath2 = ComparisonFiles.path2;
+        positionVectors(filePath1, "DanceFiles/idealVectors.txt");
+        jointsAndCoordinates.Clear();
+        positionVectorList.Clear();
+        normalisedPositionVectors.Clear();
+        positionVectors(filePath2, "DanceFiles/badVectors.txt");
+    }
+
+    private void positionVectors(string filePath, string newPath)
+    {
         //Debug.Log("Initialising");
-        loadCoordinatesToDictionary();
+        loadCoordinatesToDictionary(filePath);
         //Debug.Log("Dictionary Created");
-        createPositionVectorList();
+        createPositionVectorList(newPath);
         //Debug.Log("PV List created");
-        int count = 0;
-        foreach( List<float> list in positionVectorList) {
-            count++;
-        }
+       // int count = 0;
+       // foreach (List<float> list in positionVectorList)
+        //{
+        //    count++;
+       // }
         //Debug.Log(count);
     }
 
-    private void loadCoordinatesToDictionary() {
+    private void loadCoordinatesToDictionary(string filePath)
+    {
 
         List<string> listofXYCoordinates = new List<string>();
-        string filePath = "DanceFiles/badtest.txt";
+        //string filePath = "DanceFiles/badtest.txt";
         string line = string.Empty;
         StreamReader fileReader = new StreamReader(filePath);
 
         //add to list first so we have size
         line = fileReader.ReadLine();
         string[] frameData = new string[100];
-        char[] delimeters = {','};
+        char[] delimeters = { ',' };
         string[] lineAsArray = line.Split(delimeters);
 
-        for (int i = 0; i < 25; i++) {
+        for (int i = 0; i < 25; i++)
+        {
             listofXYCoordinates.Add("Joint: ");
         }
 
-        while ((line = fileReader.ReadLine()) != null) {
+        while ((line = fileReader.ReadLine()) != null)
+        {
             lineAsArray = line.Split(delimeters);
             int countX = 1;
             int countY = 2;
             int countZ = 3;
 
-            for (int i = 0; i < lineAsArray.Length; i++) {
+            for (int i = 0; i < lineAsArray.Length; i++)
+            {
                 if (string.Equals(lineAsArray[i], "1"))
                 {
                     Array.Copy(lineAsArray, i + 2, frameData, 0, 100);
@@ -57,7 +76,8 @@ public class PositionMonoBehaviour : MonoBehaviour
                 }
             }
 
-            for (int j = 0; j < 25; j++) {
+            for (int j = 0; j < 25; j++)
+            {
                 listofXYCoordinates[j] += "," + frameData[countX] + "," + frameData[countY] + "," + frameData[countZ]; //adds the x and y of the joint
                 countX += 4;
                 countY += 4;
@@ -71,7 +91,8 @@ public class PositionMonoBehaviour : MonoBehaviour
         addToDictionary(listofXYCoordinates);
     }
 
-    private void createPositionVectorList() {
+    private void createPositionVectorList(string newPath)
+    {
         //0-17 index shows the pairs of points
         positionVectorList.Add(getPositionVector(jointsAndCoordinates["Head"], jointsAndCoordinates["Neck"]));
         positionVectorList.Add(getPositionVector(jointsAndCoordinates["Neck"], jointsAndCoordinates["SpineShoulder"]));
@@ -91,10 +112,11 @@ public class PositionMonoBehaviour : MonoBehaviour
         positionVectorList.Add(getPositionVector(jointsAndCoordinates["ElbowLeft"], jointsAndCoordinates["WristLeft"]));
         positionVectorList.Add(getPositionVector(jointsAndCoordinates["ElbowRight"], jointsAndCoordinates["WristRight"]));
 
-        normalisePositionVectors();
+        normalisePositionVectors(newPath);
     }
 
-    public void addToDictionary(List<string> coOrds) {
+    public void addToDictionary(List<string> coOrds)
+    {
         jointsAndCoordinates.Add("SpineBase", coOrds[0]);
         jointsAndCoordinates.Add("SpineMid", coOrds[1]);
         jointsAndCoordinates.Add("Neck", coOrds[2]);
@@ -122,11 +144,12 @@ public class PositionMonoBehaviour : MonoBehaviour
         jointsAndCoordinates.Add("ThumbRight", coOrds[24]);
     }
 
-    private List<float> getPositionVector(string firstJoint, string secondJoint) {
-        char[] delimeters = {','};
+    private List<float> getPositionVector(string firstJoint, string secondJoint)
+    {
+        char[] delimeters = { ',' };
         float coordOne, coordTwo, difference;
         List<float> positionVectors = new List<float>();
-        
+
         //Debug.Log(firstJoint);
         //Debug.Log(secondJoint);
 
@@ -136,7 +159,8 @@ public class PositionMonoBehaviour : MonoBehaviour
         //Debug.Log(coOrdsOfFirstJoint.Length);
         //Debug.Log(coordsOfSecondJoint.Length);
 
-        for (int j = 1; j < coOrdsOfFirstJoint.Length; j++){
+        for (int j = 1; j < coOrdsOfFirstJoint.Length; j++)
+        {
             float.TryParse(coOrdsOfFirstJoint[j], NumberStyles.Float, CultureInfo.InvariantCulture, out coordOne);
             float.TryParse(coordsOfSecondJoint[j], NumberStyles.Float, CultureInfo.InvariantCulture, out coordTwo);
             difference = coordTwo - coordOne;
@@ -148,24 +172,25 @@ public class PositionMonoBehaviour : MonoBehaviour
         return positionVectors;
     }
 
-    private void normalisePositionVectors() {
+    private void normalisePositionVectors(string filePathNormalisedVectors)
+    {
         /*Debug.Log("the interpolated one");
         foreach (List<float> list in positionVectorList){
             string s = string.Join(" ", list);
             Debug.Log(s);
         }*/
 
-        string filePathNormalisedVectors = "DanceFiles/modelDance.txt";
-
         //get the length of the position vectors and then reproduce a list with division of the length
         List<float> tempNormalisedCoord = new List<float>();
         float length = 0.0000f;
-        foreach (List<float> coordinateXYZ in positionVectorList) {
-            for (int i = 0; i < coordinateXYZ.Count(); i += 3) {
-                length += Abs(coordinateXYZ[i]) + Abs(coordinateXYZ[i+1]) + Abs(coordinateXYZ[i+2]);
-                tempNormalisedCoord.Add((float)Math.Round(((float)coordinateXYZ[i]/length), 4, MidpointRounding.ToEven));
-                tempNormalisedCoord.Add((float)Math.Round(((float)coordinateXYZ[i+1]/length), 4, MidpointRounding.ToEven));
-                tempNormalisedCoord.Add((float)Math.Round(((float)coordinateXYZ[i+2]/length), 4, MidpointRounding.ToEven));
+        foreach (List<float> coordinateXYZ in positionVectorList)
+        {
+            for (int i = 0; i < coordinateXYZ.Count(); i += 3)
+            {
+                length += Abs(coordinateXYZ[i]) + Abs(coordinateXYZ[i + 1]) + Abs(coordinateXYZ[i + 2]);
+                tempNormalisedCoord.Add((float)Math.Round(((float)coordinateXYZ[i] / length), 4, MidpointRounding.ToEven));
+                tempNormalisedCoord.Add((float)Math.Round(((float)coordinateXYZ[i + 1] / length), 4, MidpointRounding.ToEven));
+                tempNormalisedCoord.Add((float)Math.Round(((float)coordinateXYZ[i + 2] / length), 4, MidpointRounding.ToEven));
             }
             normalisedPositionVectors.Add(tempNormalisedCoord);
             length = 0.0000f;
@@ -177,23 +202,29 @@ public class PositionMonoBehaviour : MonoBehaviour
         foreach (List<float> list in normalisedPositionVectors){
             string s = string.Join(" ", list);
             Debug.Log(s);
-        }*/ 
+        }*/
 
         //Debug.Log(normalisedPositionVectors);
     }
 
-    public static void writeToFile(string filePath, List<List<float>> data) {
-        if (!File.Exists(filePath)) {
-            using (StreamWriter fileWriter = File.CreateText(filePath)) {
+    public static void writeToFile(string filePath, List<List<float>> data)
+    {
+        if (!File.Exists(filePath))
+        {
+            using (StreamWriter fileWriter = File.CreateText(filePath))
+            {
                 fileWriter.WriteLine("");
             }
         }
-        else {
+        else
+        {
             File.WriteAllText(filePath, string.Empty);
         }
 
-        using (StreamWriter fileWriter = File.AppendText(filePath)) {
-            foreach ( List<float> line in data) {
+        using (StreamWriter fileWriter = File.AppendText(filePath))
+        {
+            foreach (List<float> line in data)
+            {
                 string s = string.Join(" ", line);
                 fileWriter.WriteLine(s);
             }
